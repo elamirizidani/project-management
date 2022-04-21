@@ -122,7 +122,7 @@
         if(!empty($array))
             return $array;
     }
-    function developerWeekly($user,$projectId,$startDay,$endDay,$status)
+    function developerWeekly($projectId,$startDay,$endDay,$status)
     {
         $tables = mysqli_query($this->con,"SELECT COUNT(`tasks`.`tId`) as `task` FROM project JOIN tasks ON project.pId=tasks.pId 
         WHERE (`tasks`.`lastUpdate` BETWEEN '$startDay' AND '$endDay') AND 
@@ -134,7 +134,7 @@
         if(!empty($array))
             return $array;
     }
-
+/*
     function designerWeekly($user,$projectId,$startDay,$endDay,$status)
     {
         $tables = mysqli_query($this->con,"SELECT `project`.`name` as `project`,`tasks`.`name` as `task` FROM users JOIN project on users.uId=project.designer 
@@ -148,7 +148,7 @@
         if(!empty($array))
             return $array;
     }
-
+*/
 
 
 
@@ -199,9 +199,9 @@
             return $array;
     }
 
-    function tasks($user)
+    function tasks()
     {
-        $tasks = mysqli_query($this->con, "SELECT `tasks`.`status` as `status`,`tasks`.`name` as `task`,`project`.`name` as `project` FROM `project` JOIN `tasks` ON `project`.`pId` = `tasks`.`pId` WHERE `project`.`assigned` = '$user'");
+        $tasks = mysqli_query($this->con, "SELECT `tasks`.`status` as `status`,`tasks`.`name` as `task`,`project`.`name` as `project`,`project`.`assigned`,`project`.`designer` FROM `project` JOIN `tasks` ON `project`.`pId` = `tasks`.`pId`");
         while($task = mysqli_fetch_assoc($tasks))
         {
             $array[] = $task;

@@ -219,9 +219,15 @@ if(isset($_POST['startMokeup']))
         'status' => 'inprogress',
         'mokeupDesc'=> 'Just started'
     );
+    $newTask = array(
+        'pId' => $_POST['id'],
+        'name' => 'Mockup',
+        'status' => 'new',
+    );
     if($con->insert("mokeup", $mokeup))
     {
-        include "../admin/projects.php";
+        if($con->insert("tasks",$newTask))
+            include "../admin/projects.php";
     }
 }
 

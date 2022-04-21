@@ -9,9 +9,9 @@ function weeklyReport($user,$startDay,$endDay) {
 }?>
 <section class="post">
     <div class="container">
-    <div class="profile">
-        <div class="main-profile">
-            <?php
+        <div class="profile">
+            <div class="main-profile">
+                <?php
             $startDay = $_POST['startDate'];
             $endDay = $_POST['endDate'];
             $user = $_POST['user'];
@@ -19,23 +19,29 @@ function weeklyReport($user,$startDay,$endDay) {
                 if(!empty($persons))
                     foreach ($persons as $person) 
                 
-                
+                if($person['role'] == 'developer')
+                    $usersProjects = $con->singleTable('project','assigned',$user);
+                elseif($person['role'] == 'designer')
+                    $usersProjects = $con->singleTable('project','designer',$user); 
+                else
+                    $usersProjects = "";
+                                   
             ?>
-            <div class="profile-pic">
-                <img src="../assets/images/profile/avatar7.png" alt="">
-            </div>
-            <div class="profile-desc">
-                <h1><?php echo $person['names']?></h1>
-                <h4><?php echo $person['role']?></h4>
-                <div class="profile-contact">
-                    <p>E-mail: <a href="mailto:<?php echo $person['email']?>"><?php echo $person['email']?></a></p>
-                    <p>Phone: <a href="tel:<?php echo $person['phone']?>"><?php echo $person['phone']?></a></p>
+                <div class="profile-pic">
+                    <img src="../assets/images/profile/avatar7.png" alt="">
                 </div>
-                
+                <div class="profile-desc">
+                    <h1><?php echo $person['names']?></h1>
+                    <h4><?php echo $person['role']?></h4>
+                    <div class="profile-contact">
+                        <p>E-mail: <a href="mailto:<?php echo $person['email']?>"><?php echo $person['email']?></a></p>
+                        <p>Phone: <a href="tel:<?php echo $person['phone']?>"><?php echo $person['phone']?></a></p>
+                    </div>
+
+                </div>
+
             </div>
-            
-            </div>
-            
+
             <div class="statistics-profile">
                 <div class="projects">
                     <?php
@@ -43,34 +49,34 @@ function weeklyReport($user,$startDay,$endDay) {
                             foreach ($assigned as $assign)
                             {
                         ?>
-                        <h1><?=$assign['assigned']?></h1>
-                        <?php }?>
-                    
+                    <h1><?=$assign['assigned']?></h1>
+                    <?php }?>
+
                     <span>
                         Assigned Project
                     </span>
                 </div>
-                
+
                 <div class="projects">
                     <?php
                             $completed = $con->projects($user,"completed");
                             foreach ($completed as $complete)
                             {?>
-                        <h1><?php echo $complete['progress']?></h1>
-                        <?php }?>
-                    
+                    <h1><?php echo $complete['progress']?></h1>
+                    <?php }?>
+
                     <span>
                         Completed Project
                     </span>
                 </div>
                 <div class="projects">
-                <?php
+                    <?php
                             $inprogress = $con->projects($user,"progress");
                             foreach ($inprogress as $progress)
                             {
                             ?>
-                        <h1><?php echo $progress['progress']?></h1>
-                        <?php }?>
+                    <h1><?php echo $progress['progress']?></h1>
+                    <?php }?>
                     <span>
                         InProgress Project
                     </span>
@@ -81,9 +87,8 @@ function weeklyReport($user,$startDay,$endDay) {
                             foreach ($news as $new)
                             {
                             ?>
-                        <h1><?php echo $new['progress']?></h1>
-                        <?php }?>
-                    
+                    <h1><?php echo $new['progress']?></h1>
+                    <?php }?>
                     <span>
                         Not yet started Project
                     </span>
@@ -117,43 +122,44 @@ function weeklyReport($user,$startDay,$endDay) {
                         for ($i=0; $i<7;$i++){
                             $endDay = date("Y-m-d", strtotime($startDay . " + $i day"));
                         }*/
-                            $usersProjects = $con->singleTable('project','assigned',$user);
                             if(!empty($usersProjects))
                             {
                                 foreach($usersProjects as $usersProject)
                                 {?>
 
-                            <div class="activity-body">
+                        <div class="activity-body">
                             <h4>
                                 <?php echo $usersProject['name']; $projectId = $usersProject['pId'];?>:
                             </h4>
                             <h4>Completed Deliverable:</h4>
                             <ul list-style-type="georgian">
                                 <?php
-                                $weeklies = $con->developerWeekly($user,$projectId,$startDay,$endDay,'completed');
+                                $weeklies = $con->developerWeekly($projectId,$startDay,$endDay,'completed');
+                                
                                 if(!empty($weeklies))
                                 {
+
                                     foreach($weeklies as $weekly)
                                     {
                                         if($weekly['task'] >0)
                                         {?>
-                                        <li>
-                                            <?php echo $weekly['task']?> Task(s)
-                                        </li>
-                                    <?php }
+                                <li>
+                                    <?php echo $weekly['task']?> Task(s)
+                                </li>
+                                <?php }
                                     else{?>
-                                    <li style="color:red">
-                                        Nothing Completed in this week
-                                    </li>
+                                <li style="color:red">
+                                    Nothing Completed in this week
+                                </li>
                                 <?php } 
                                     }
                                 }
                                 ?>
-                                
+
                             </ul>
                         </div>
 
-                            <?php }}
+                        <?php }}
                         ?>
                     </div>
 
@@ -166,10 +172,8 @@ function weeklyReport($user,$startDay,$endDay) {
                                 DUE DATE
                             </div>
                         </div>
-                        
-                            <?php
 
-                            $usersProjects = $con->singleTable('project','assigned',$user);
+                        <?php
                             if(!empty($usersProjects))
                             {
                                 foreach($usersProjects as $usersProject)
@@ -179,26 +183,26 @@ function weeklyReport($user,$startDay,$endDay) {
                             <div class="sub-body">
                                 <h4><?php echo $usersProject['name']; $projectId = $usersProject['pId'];?>:</h4>
                                 <ul list-style-type="georgian">
-                                <?php
-                                $weeklies = $con->developerWeekly($user,$projectId,$startDay,$endDay,'inprogress');
+                                    <?php
+                                $weeklies = $con->developerWeekly($projectId,$startDay,$endDay,'inprogress');
                                 if(!empty($weeklies))
                                 {
                                     foreach($weeklies as $weekly)
                                     {?>
-                                        <li>
-                                            <?php echo $weekly['task']?> Task(s)
-                                        </li>
+                                    <li>
+                                        <?php echo $weekly['task']?> Task(s)
+                                    </li>
                                     <?php }
                                 }
                                 else{?>
                                     <li style="color:red">
                                         Nothing Inprogress For this Project
                                     </li>
-                                <?php } 
+                                    <?php } 
                              ?>
-                            </ul>
+                                </ul>
 
-                                
+
                             </div>
                         </div>
                         <?php
@@ -213,33 +217,33 @@ function weeklyReport($user,$startDay,$endDay) {
                             ACTIVITIES TO BE STARTED NEXT WEEK
                         </div>
                         <?php 
-                            $usersProjects = $con->singleTable('project','assigned',$user);
+                        
                             if(!empty($usersProjects))
                             {
                                 foreach($usersProjects as $usersProject)
                                 {?>
 
-                            <div class="activity-body">
+                        <div class="activity-body">
                             <h4>
                                 <?php echo $usersProject['name']; $projectId = $usersProject['pId'];?>:
                             </h4>
                             <ul list-style-type="georgian">
                                 <?php
-                                $weeklies = $con->developerWeekly($user,$projectId,$startDay,$endDay,'nextweek');
+                                $weeklies = $con->developerWeekly($projectId,$startDay,$endDay,'nextweek');
                                 if(!empty($weeklies))
                                 {
                                     foreach($weeklies as $weekly)
                                     {?>
-                                        <li>
-                                            <?php echo $weekly['task']?> Task(s)
-                                        </li>
-                                    <?php }
+                                <li>
+                                    <?php echo $weekly['task']?> Task(s)
+                                </li>
+                                <?php }
                                 }
                              ?>
                             </ul>
                         </div>
 
-                            <?php }}
+                        <?php }}
                         ?>
 
                     </div>
@@ -259,33 +263,33 @@ function weeklyReport($user,$startDay,$endDay) {
                             ISSUES FOR IMMIDEDIATE ATTENTION
                         </div>
                         <?php 
-                            $usersProjects = $con->singleTable('project','assigned',$user);
+                        
                             if(!empty($usersProjects))
                             {
                                 foreach($usersProjects as $usersProject)
                                 {?>
 
-                            <div class="activity-body">
+                        <div class="activity-body">
                             <h4>
                                 <?php echo $usersProject['name']; $projectId = $usersProject['pId'];?>:
                             </h4>
                             <ul list-style-type="georgian">
                                 <?php
-                                $weeklies = $con->developerWeekly($user,$projectId,$startDay,$endDay,'issue');
+                                $weeklies = $con->developerWeekly($projectId,$startDay,$endDay,'issue');
                                 if(!empty($weeklies))
                                 {
                                     foreach($weeklies as $weekly)
                                     {?>
-                                        <li>
-                                            <?php echo $weekly['task']?> Task(s)
-                                        </li>
-                                    <?php }
+                                <li>
+                                    <?php echo $weekly['task']?> Task(s)
+                                </li>
+                                <?php }
                                 }
                              ?>
                             </ul>
                         </div>
 
-                            <?php }}
+                        <?php }}
                         ?>
                     </div>
                 </div>
@@ -293,17 +297,17 @@ function weeklyReport($user,$startDay,$endDay) {
         </section>
         <button class="btn add-btn" onclick="printReport()">Print</button>
     </div>
-    
-    </section>
-    <script>
-        function printReport() {
-            const printContents = document.getElementById('toBePrinted').innerHTML;
-            const originalContents = document.body.innerHTML;
-            document.body.innerHTML = printContents;
-            window.print();
-            document.body.innerHTML = originalContents;
-        }
-    </script>
+
+</section>
+<script>
+function printReport() {
+    const printContents = document.getElementById('toBePrinted').innerHTML;
+    const originalContents = document.body.innerHTML;
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+}
+</script>
 
 <?php
 }} ?>
