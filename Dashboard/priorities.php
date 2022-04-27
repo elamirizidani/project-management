@@ -117,6 +117,9 @@
                 </div>
             </div>
             <div class="priorities row">
+                <?php
+            if($login_role != "admin")
+{?>
                 <div class="todoList">
                     <div class="priorities-header taskes">
                         <h1>To Do List </h1>
@@ -159,8 +162,18 @@
                                 ?>
                     </div>
                 </div>
-                <div class="todoList" id="calend">
+                <?php }?>
+                <div class="todoList" id="<?php if($login_role != "admin"){echo "calend";}?>">
+                    <?php
+if($login_role == "admin")
+{?>
+                    <div style="width: 90%;padding: 0px;height:90%;">
+                        <?php include "../reports/chart.php";?>
+                    </div>
 
+                    <?php
+}
+?>
                 </div>
             </div>
             <div id="confirmation" class="model-container">

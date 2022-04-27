@@ -112,6 +112,7 @@ function weeklyReport($user,$startDay,$endDay) {
                         <p>To: <?php echo $endDay;?></p>
                     </div>
                 </div>
+                <a href="index.php?view&user=<?=$user;?>&from=<?=$startDay;?>&to=<?=$endDay;?>">View Details</a>
                 <div class="rep-activities">
                     <div class="activity">
                         <div class="activity-head">

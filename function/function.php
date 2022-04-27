@@ -134,6 +134,43 @@
         if(!empty($array))
             return $array;
     }
+    function reportDetail($condition)
+    {
+        $cond ="";
+
+        foreach($condition as $key => $value)
+        {
+            $cond .= $key."='".$value."'";
+        }   
+        $tables = mysqli_query($this->con,"SELECT tasks.tId,project.name AS project, 
+        tasks.name AS tasks,updates.lastUpdate, updates.uDescription FROM project
+         JOIN tasks ON project.pId=tasks.pId JOIN updates ON 
+        tasks.tId=updates.tId WHERE project.".$cond."");
+        while($table = mysqli_fetch_array($tables))
+        {
+            $array[] = $table;
+        }
+        if(!empty($array))
+            return $array;
+    }
+
+    function countFields($condition)
+    {
+        $cond ="";
+
+        foreach($condition as $key => $value)
+        {
+            $cond .= $key."='".$value."'";
+        }   
+        $tables = mysqli_query($this->con,"SELECT count(updates.tId) as `number` FROM project JOIN tasks ON 
+        project.pId=tasks.pId JOIN updates ON tasks.tId=updates.tId WHERE project.".$cond."");
+        while($table = mysqli_fetch_array($tables))
+        {
+            $array[] = $table;
+        }
+        if(!empty($array))
+            return $array;
+    }
 /*
     function designerWeekly($user,$projectId,$startDay,$endDay,$status)
     {
@@ -149,6 +186,18 @@
             return $array;
     }
 */
+
+function weeklyTasks($role,$user)
+{
+    $tables = mysqli_query($this->con,"SELECT COUNT(`tasks`.`tId`) as `tasks` FROM `project` JOIN `tasks` ON 
+    `project`.`pId` = `tasks`.`pId` WHERE `tasks`.`status` = 'completed' AND `project`.".$role." = ".$user."");
+    while($table = mysqli_fetch_array($tables))
+    {
+        $array[] = $table;
+    }
+    if(!empty($array))
+        return $array;
+}
 
 
 
